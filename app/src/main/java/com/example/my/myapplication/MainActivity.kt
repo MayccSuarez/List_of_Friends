@@ -10,8 +10,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var edtName   :EditText
     private lateinit var btnSubmit :Button
     private lateinit var lvPersons :ListView
-    private lateinit var adapter: ArrayAdapter<String>
-    private var data: ArrayList<String> = arrayListOf("Maycc", "Martìn", "Juan")
+    private lateinit var adapter: PersonAdapterListView
+    private  var persons: ArrayList<Person> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
         title = "My List of Friends"
 
         bindViews()
+        loadArrayListPersons()
         fillListViewPersons()
         addListenerBtnSubmit()
         addListenerListViewPersons()
@@ -31,8 +32,16 @@ class MainActivity : AppCompatActivity() {
          lvPersons    = findViewById(R.id.lvPersons)
     }
 
+    private fun loadArrayListPersons () {
+        persons.add(Person("Maycc Suàrez", R.drawable.icon))
+        persons.add(Person("Martìn Suàrez", R.drawable.icon))
+        persons.add(Person("Kerly Suàrez",  R.drawable.icon))
+        persons.add(Person("Tayron Suàrez",  R.drawable.icon))
+    }
+
     private fun fillListViewPersons(){
-        adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, data)
+        //adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, data)
+        adapter = PersonAdapterListView(this, persons)
         lvPersons.adapter  = adapter
     }
 
@@ -55,13 +64,13 @@ class MainActivity : AppCompatActivity() {
         var txt = ""
 
         lvPersons.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
-            txt = "Amigo ${i + 1} -> ${data[i]}"
+            txt = "Amigo ${i + 1} -> ${persons[i].name}"
             showAlert(txt)
         }
 
         lvPersons.onItemLongClickListener = AdapterView.OnItemLongClickListener { adapterView, view, i, l ->
             deletePerson(i)
-            txt = "Amigo ${i + 1} Eliminado!!!"
+            txt = "Amigo ${persons[i].name} Eliminado!!!"
             showAlert(txt)
 
             true
@@ -78,12 +87,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadPersonToListViewPersons(name :String){
-        data.add(name)
+        persons.add(Person(name, R.drawable.icon))
         adapter.notifyDataSetChanged()
     }
 
     private fun deletePerson (i :Int){
-        data.removeAt(i)
+        persons.removeAt(i)
         adapter.notifyDataSetChanged()
     }
 
